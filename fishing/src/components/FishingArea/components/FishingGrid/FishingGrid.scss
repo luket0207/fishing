@@ -1,0 +1,40 @@
+.grid-container {
+    display: grid;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 1px;
+  }
+  
+  .grid-item {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  
+  .normal {
+    background-color: #35768b; // You can change the color as needed
+  }
+
+  .land {
+    background-color: peru;
+  }
+
+  .shallow {
+    background-color: #61c6f5;
+  }
+
+  .deep {
+    background-color: #27278f;
+  }
+
+  .reeds {
+    background-color: wheat;
+  }
+
+  .swamp {
+    background-color: seagreen;
+  }
+
+  .grid-item.active {
+    background-color: yellow; // Highlight the active square
+  }  

@@ -1,0 +1,128 @@
+import React, { useState, useEffect } from 'react';
+import './CastControl.scss';
+import CastWheel from '../CastWheel/CastWheel';
+
+const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
+  const [castScene, setCastScene] = useState('start');
+  const [aim, setAim] = useState(0);
+  const [power, setPower] = useState(0);
+  const aimRange = (Math.sqrt(size) - 1) / 2;
+  const powerRange = 25; 
+  const [aimValue, setAimValue] = useState(0);
+  const [powerValue, setPowerValue] = useState(0);
+  const [aimDirection, setAimDirection] = useState(1);
+  const [powerDirection, setPowerDirection] = useState(1); // Separate direction for power
+  const aimIntervalDuration = 20; 
+  const powerIntervalDuration = 50; 
+
+  useEffect(() => {
+    let interval;
+    if (castScene === 'start') {
+        setAimValue(0); 
+        setAimDirection(1);
+        setActiveSquareId(null);
+        setPowerValue(0);
+    } else if (castScene === 'aim') {
+      interval = setInterval(() => {
+        setAimValue(prev => {
+          // Update value based on direction
+          let newValue = prev + aimDirection;
+
+          // Check bounds and update direction
+          if (newValue > aimRange) {
+            newValue = aimRange;
+            setAimDirection(-1); // Change direction to down
+          } else if (newValue < -aimRange) {
+            newValue = -aimRange;
+            setAimDirection(1); // Change direction to up
+          }
+
+          return newValue;
+        });
+      }, aimIntervalDuration);
+    } else if (castScene === 'power') {
+      interval = setInterval(() => {
+        setPowerValue(prev => {
+          // Update value based on direction
+          let newValue = prev + powerDirection;
+
+          // Check bounds and update direction
+          if (newValue > powerRange) {
+            newValue = powerRange;
+            setPowerDirection(-1); // Change direction to down
+          } else if (newValue < 0) {
+            newValue = 0;
+            setPowerDirection(1); // Change direction to up
+          }
+          return newValue;
+        });
+      }, powerIntervalDuration);
+    } else if (castScene === 'idle') {
+      setAim(aimValue); 
+      setPower(powerValue); 
+      setActiveSquareId(calculateSquare(aimValue, powerValue, size));
+    }
+
+    return () => clearInterval(interval);
+  }, [castScene, aimRange, aimDirection, aimValue, powerRange, powerDirection, powerValue, size, setActiveSquareId]);
+
+  const handleNextScene = () => {
+    if (castScene === 'start') {
+      setCastScene('aim');
+    } else if (castScene === 'aim') {
+      setCastScene('power');
+    } else if (castScene === 'power') {
+      setCastScene('idle');
+    } else if (castScene === 'idle') {
+      setCastScene('start');
+    }
+  };
+
+  const calculateSquare = (aim, power, size) => {
+    const square = (size - ((Math.sqrt(size) + 1) / 2));
+    const rowSize = Math.sqrt(size);
+    const rowCalc = (square - (power * rowSize));
+    const newSquare = (rowCalc + aim);
+
+    return newSquare;
+  }
+
+  return (
+    <div className="cast-control">
+      {castScene === 'start' && (
+        <div className="castScene">
+          <h2>Start Scene</h2>
+          <button onClick={handleNextScene}>Cast</button>
+        </div>
+      )}
+      {castScene !== 'start' &&
+        <CastWheel aim={aimValue.toFixed(0)} power={powerValue.toFixed(0)} aimRange={aimRange} powerRange={powerRange} />
+      }
+      {castScene === 'aim' && (
+        <div className="castScene">
+          <h2>Aim Scene</h2>
+          <p>Aim Value: {aimValue.toFixed(0)}</p>
+          <button onClick={handleNextScene}>Stop</button>
+        </div>
+      )}
+      {castScene === 'power' && (
+        <div className="castScene">
+          <h2>Power Scene</h2>
+          <p>Power Value: {powerValue.toFixed(0)}</p>
+          <button onClick={handleNextScene}>Stop</button>
+        </div>
+      )}
+      {castScene === 'idle' && (
+        <div className="castScene">
+          <h2>Idle</h2>
+          <p>Aim: {aim}</p>
+          <p>Power: {power}</p>
+          <p>Active: {activeSquareId}</p>
+          <button onClick={handleNextScene}>Start Again</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CastControl;

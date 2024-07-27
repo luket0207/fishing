@@ -1,0 +1,36 @@
+.cast-wheel {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    position: relative;
+    left: calc(50% - 50px);
+    transform-origin: center center;
+    background-color: seagreen;
+
+    .aim-direction {
+        position: absolute;
+        height: 50px;
+        width: 6px;
+        border-radius: 3px;
+        background-color: darkslategray;
+        top: 0px;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    .power-gauge {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        background-color: crimson;
+    }
+}
+
+.cast-wheel-container {
+    height: 50px;
+    width: 400px;
+    overflow: hidden;
+}
