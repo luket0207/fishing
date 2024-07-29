@@ -14,11 +14,26 @@ function gameReducer(state, action) {
       return { ...state, money: action.payload };
     case 'SET_REP':
       return { ...state, rep: action.payload };
-    case 'SET_MAP_ROW_ONE':
-      return { ...state, mapRowOne: action.payload };
-    case 'SET_MAP_ROW_TWO':
-      return { ...state, mapRowTwo: action.payload };
-    // Add other actions as needed
+
+    // Maps
+    case 'SET_MAP_ROW_1':
+      return { ...state, mapRow1: action.payload };
+    case 'SET_MAP_ROW_2':
+      return { ...state, mapRow2: action.payload };
+    case 'SET_MAP_ROW_3':
+      return { ...state, mapRow3: action.payload };
+    case 'SET_MAP_ROW_4':
+      return { ...state, mapRow4: action.payload };
+    case 'SET_MAP_ROW_5':
+      return { ...state, mapRow5: action.payload };
+    case 'SET_MAP_ROW_6':
+      return { ...state, mapRow6: action.payload };
+
+      //Fish
+
+    case 'SET_FISH_SPIECIES':
+      return { ...state, fishSpiecies: action.payload };
+
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }

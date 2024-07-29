@@ -1,40 +1,75 @@
+$itemSize: 16px;
+
+$biomeShallow: #E0F5FF;  /* Almost white blue */
+$biomeNormal: #A3D4F7;   /* Light blue */
+$biomeDeep: #6DAEDB;     /* Mid blue */
+$biomeBackground: #4A75B3; /* Darker blue */
+$biomeReeds: #A4C49A;    /* Light earthy green */
+$biomeSwamp: #76926e;    /* Darker earthy green */
+$biomeLand: #8B4513;     /* Deep brown/orange */
+
+
+
 .grid-container {
     display: grid;
     justify-content: center;
     margin-top: 30px;
     gap: 1px;
+    background-color: #4A75B3;
   }
   
   .grid-item {
-    width: 10px;
-    height: 10px;
+    width: $itemSize;
+    height: $itemSize;
     border-radius: 50%;
+    overflow: hidden;
+    display: flex;
   }
   
   .normal {
-    background-color: #35768b; // You can change the color as needed
+    svg {
+      color: $biomeNormal;
+      opacity: .8;
+     } 
   }
 
   .land {
-    background-color: peru;
+      background-color: $biomeLand;
+      border-radius: 25%;
   }
 
   .shallow {
-    background-color: #61c6f5;
+    svg {
+      color: $biomeShallow;
+      opacity: .8;
+    }
   }
 
   .deep {
-    background-color: #27278f;
+    svg {
+      color: $biomeDeep;
+      opacity: .8;
+    }
   }
 
   .reeds {
-    background-color: wheat;
+    svg {
+      color: $biomeReeds;
+      height: 80%;
+      width: 80%;
+      padding: 10%;
+    }
   }
 
   .swamp {
-    background-color: seagreen;
+    svg {
+      color: $biomeSwamp;
+      height: 80%;
+      width: 80%;
+      padding: 10%;
+    }
   }
 
   .grid-item.active {
-    background-color: yellow; // Highlight the active square
+    background-color: yellow !important; // Highlight the active square
   }  

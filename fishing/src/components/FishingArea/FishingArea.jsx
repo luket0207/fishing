@@ -1,20 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CastControl from './components/CastControl/CastControl';
 import FishingGrid from './components/FishingGrid/FishingGrid';
 import './FishingArea.scss';
+import Hook from './components/Hook/Hook';
 
-const FishingArea = ({  }) => {
-    const [biomeArray, setBiomeArray] = useState([5,1,10,5,0])
-    const [fishingScene, setFishingScene] = useState('cast');
-    const gridWidth = 37;
-    const size = gridWidth * gridWidth;
-    const [activeSquareId, setActiveSquareId] = useState(null);
+const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
+  const [fishingScene, setFishingScene] = useState('cast');
+  const size = activeGrid.length;
+  const [activeSquareId, setActiveSquareId] = useState(null);
+  const [activeBiome, setActiveBiome] = useState('');
+
+  const handleBack = () => {
+    setMainScene('map');
+  };
+
+  const getActiveBiome = () => {
+    const foundSquare = activeGrid.find(square => square.Id === activeSquareId);
+    console.log(foundSquare);
+    if (foundSquare) {
+      setActiveBiome(foundSquare.Biome);
+    } else {
+      setActiveBiome('');
+    }
+  };
+
+  useEffect(() => {
+    if (activeSquareId !== null) {
+      getActiveBiome();
+    }
+  }, [activeSquareId]);
 
   return (
     <div className="fishing-area">
-      <FishingGrid size={size} activeSquareId={activeSquareId} biomeArray={biomeArray} />
-      {fishingScene === 'cast' && <CastControl size={size} activeSquareId={activeSquareId} setActiveSquareId={setActiveSquareId} setFishingScene={setFishingScene} />}
-      {fishingScene === 'hook' && <></>}
+      <button onClick={handleBack}>Back</button>
+      <FishingGrid activeGrid={activeGrid} activeSquareId={activeSquareId} />
+      {fishingScene === 'cast' && (
+        <CastControl
+          size={size}
+          activeSquareId={activeSquareId}
+          setActiveSquareId={setActiveSquareId}
+          setFishingScene={setFishingScene}
+          activeBiome={activeBiome}
+          getActiveBiome={getActiveBiome}
+        />
+      )}
+      {fishingScene === 'hook' && <Hook activeBiome={activeBiome} fishArray={fishArray} />}
       {fishingScene === 'reel' && <></>}
       {fishingScene === 'catch' && <></>}
     </div>

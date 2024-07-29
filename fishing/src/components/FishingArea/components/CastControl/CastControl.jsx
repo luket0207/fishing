@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './CastControl.scss';
 import CastWheel from '../CastWheel/CastWheel';
 
-const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
+const CastControl = ({ size, activeSquareId, setActiveSquareId, setFishingScene, activeBiome, getActiveBiome }) => {
   const [castScene, setCastScene] = useState('start');
   const [aim, setAim] = useState(0);
   const [power, setPower] = useState(0);
   const aimRange = (Math.sqrt(size) - 1) / 2;
-  const powerRange = 25; 
+  const powerRange = (Math.sqrt(size) - 1); 
   const [aimValue, setAimValue] = useState(0);
   const [powerValue, setPowerValue] = useState(0);
   const [aimDirection, setAimDirection] = useState(1);
@@ -60,7 +60,9 @@ const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
     } else if (castScene === 'idle') {
       setAim(aimValue); 
       setPower(powerValue); 
-      setActiveSquareId(calculateSquare(aimValue, powerValue, size));
+      const landedOn = calculateSquare(aimValue, powerValue, size);
+      setActiveSquareId(landedOn);
+      getActiveBiome(landedOn);
     }
 
     return () => clearInterval(interval);
@@ -74,7 +76,7 @@ const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
     } else if (castScene === 'power') {
       setCastScene('idle');
     } else if (castScene === 'idle') {
-      setCastScene('start');
+      setFishingScene('hook');
     }
   };
 
@@ -83,7 +85,6 @@ const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
     const rowSize = Math.sqrt(size);
     const rowCalc = (square - (power * rowSize));
     const newSquare = (rowCalc + aim);
-
     return newSquare;
   }
 
@@ -114,11 +115,8 @@ const CastControl = ({ size, activeSquareId, setActiveSquareId }) => {
       )}
       {castScene === 'idle' && (
         <div className="castScene">
-          <h2>Idle</h2>
-          <p>Aim: {aim}</p>
-          <p>Power: {power}</p>
-          <p>Active: {activeSquareId}</p>
-          <button onClick={handleNextScene}>Start Again</button>
+          <h2>Landed on {activeBiome}</h2>
+          <button onClick={handleNextScene}>Ok</button>
         </div>
       )}
     </div>
