@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import "./Hook.scss";
 
-const Hook = ({ activeBiome, weather }) => {
+const Hook = ({ activeBiome, fishArray, weather }) => {
 
-  const [nibbleChance, setNibbleChance] = useState(0);
+  const [nibblingFish, setNibblingFish] = useState("");
+  const [landCheck, setLandCheck] = useState(false);
   const rodStrikeModifier = 80;
   const hookStrikeModifier = 60;
   const lineStrikeModifier = 0;
@@ -35,24 +36,33 @@ const Hook = ({ activeBiome, weather }) => {
     }
   };
 
-  //nibble
+  //catch
   const rodCatchModifier = 80;
   const baitCatchModifier = 20;
   const tackleCatchModifer = 20;
   const weatherCatchModifier = calculateWeatherCatchModifier(weather);
+
+  //more than one
   const [biomeCatchModifier, biomeSnagModifier] = calculateBiomeModifiers(activeBiome, weather);
 
-  const calculateNibbleChance = () => {
-
+  const startHookSequence = (fishArray) => {
+   //working
   }
 
+
   useEffect(() => {
-    //I need to make the fish speicies list because all of these will be altered by it except for rod and tackle. 
-  }, [rodCatchModifier, baitCatchModifier, tackleCatchModifer, weatherCatchModifier, biomeCatchModifier]);
+    if (activeBiome === "land") {
+      setLandCheck(true);
+    } else {
+      startHookSequence(fishArray);
+    }
+  }, []);
 
   return (
     <div className="hook">
       <p>Hook</p>
+      {landCheck && <p>Land</p>}
+      {!landCheck && <p>Not Land</p>}
     </div>
   );
 };

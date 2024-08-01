@@ -7,8 +7,8 @@ const FishingGrid = ({ activeGrid, activeSquareId }) => {
   const gridSize = Math.sqrt(activeGrid.length);
 
   return (
-    <div>
-      <div className="grid-container" style={{ gridTemplateColumns: `repeat(${gridSize}, 16px)` }}>
+    <div className="background grass">
+      <div className="grid-container" style={{ gridTemplateColumns: `repeat(${gridSize}, 14px)` }}>
         {activeGrid.map((square) => (
           <div
             key={square.Id}

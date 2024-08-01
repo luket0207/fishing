@@ -1,19 +1,10 @@
-$itemSize: 16px;
+@import '../../../../assets/scss/imports.scss';
 
-$biomeShallow: #E0F5FF;  /* Almost white blue */
-$biomeNormal: #A3D4F7;   /* Light blue */
-$biomeDeep: #6DAEDB;     /* Mid blue */
-$biomeBackground: #4A75B3; /* Darker blue */
-$biomeReeds: #A4C49A;    /* Light earthy green */
-$biomeSwamp: #76926e;    /* Darker earthy green */
-$biomeLand: #8B4513;     /* Deep brown/orange */
-
-
+$itemSize: 14px;
 
 .grid-container {
     display: grid;
     justify-content: center;
-    margin-top: 30px;
     gap: 1px;
     background-color: #4A75B3;
   }
@@ -73,3 +64,14 @@ $biomeLand: #8B4513;     /* Deep brown/orange */
   .grid-item.active {
     background-color: yellow !important; // Highlight the active square
   }  
+
+  //Background
+
+  .background {
+    height: 600px;
+    width: 700px;
+    background-color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

@@ -1,0 +1,294 @@
+.fish {
+  position: relative;
+  background: none;
+  margin: 5%;
+
+  .fish-body {
+    width: 100%;
+    height: 100%;
+    background-color: #4aa1c9;
+    border-radius: 50% / 60%;
+    position: relative;
+    overflow: hidden; 
+  }
+
+  .fish-body-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; // So the pattern doesn't interfere with mouse events
+    --pattern-color: transparent;
+    --pattern-color-secondary: transparent;
+
+    &.dots {
+      background-image: radial-gradient(circle, var(--pattern-color-secondary) 10%, transparent 90%);
+      background-size: 10px 10px;
+    }
+
+    &.verticalStripes {
+      background-image: repeating-linear-gradient(90deg, var(--pattern-color), var(--pattern-color-secondary) 10px, transparent 10px, transparent 20px);
+    }
+
+    &.horizontalStripes {
+      background-image: repeating-linear-gradient(0deg, var(--pattern-color), var(--pattern-color-secondary) 10px, transparent 10px);
+    }
+
+    &.diagonalStripes {
+      background-image: repeating-linear-gradient(45deg, var(--pattern-color), var(--pattern-color-secondary) 10px, transparent 10px, transparent 20px);
+    }
+
+    &.twoTone {
+      background: linear-gradient(to right, var(--pattern-color) 55%, var(--pattern-color-secondary) 45%);
+    }
+  }
+
+  .fish-tail {
+    clip-path: polygon(50% 50%, 100% 0, 82% 100%, 18% 100%, 0 0);
+    transform: rotate(90deg) translateX(-50%);
+    position: absolute;
+    top: 50%;
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .fish-topFin, .fish-bottomFin {
+    clip-path: polygon(85% 37%, 0% 100%, 100% 100%);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .fish-topFin {
+    top: 0;
+    transform: translate(-50%,-80%);
+  }
+
+  .fish-bottomFin {
+    bottom: 0;
+    transform: rotate(180deg) scaleX(-1) translate(-50%, -80%);
+  }
+
+  .fish-sideFin {
+    background-color: black;
+    clip-path: polygon(0 0, 50% 0, 100% 30%, 100% 70%, 50% 100%, 0 100%, 61% 70%, 60% 30%);
+    position: absolute;
+    left: 30%;
+    transform: translateY(-50%);
+  }
+
+  .fish-eye {
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+
+    &::after {
+      content: "";
+      background-color: black;
+      border-radius: 50%;
+      position: absolute;
+    }
+  }
+
+  .tooltip {
+    position: absolute;
+    top: -30px; /* Adjust based on the desired position */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 3000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  &:hover .tooltip {
+    opacity: 1;
+  }
+
+  // Sizes
+  &.normal,
+  &.thin,
+  &.round {
+    &.small {
+      width: 60px;
+      height: 30px;
+
+      &.round {
+        width: 45px; // Reduced width for rounder appearance
+        border-radius: 50% / 50%;
+      }
+
+      &.thin {
+        height: 20px;
+      }
+    }
+
+    &.medium {
+      width: 120px;
+      height: 60px;
+
+      &.round {
+        width: 90px;
+        border-radius: 50% / 50%;
+      }
+
+      &.thin {
+        height: 40px;
+      }
+    }
+
+    &.large {
+      width: 300px;
+      height: 150px;
+
+      &.round {
+        width: 225px;
+        border-radius: 50% / 50%;
+      }
+
+      &.thin {
+        height: 100px;
+      }
+    }
+
+    // Adjust fish-tail
+    &.small .fish-tail {
+      width: 27px;
+      height: 27px;
+      right: -15px;
+      top: 50%;
+    }
+
+    &.medium .fish-tail {
+      width: 54px;
+      height: 54px;
+      right: -30px;
+      top: 50%;
+    }
+
+    &.large .fish-tail {
+      width: 135px;
+      height: 135px;
+      right: -75px;
+      top: 50%;
+    }
+
+    // Adjust fish-topFin and fish-bottomFin
+    &.small .fish-topFin,
+    &.small .fish-bottomFin {
+      width: 30px;
+      height: 15px;
+
+      &.round {
+        width: 22.5px; // Adjust width for round shape
+      }
+
+      &.thin {
+        height: 10px;
+      }
+    }
+
+    &.medium .fish-topFin,
+    &.medium .fish-bottomFin {
+      width: 60px;
+      height: 30px;
+
+      &.round {
+        width: 45px;
+      }
+
+      &.thin {
+        height: 20px;
+      }
+    }
+
+    &.large .fish-topFin,
+    &.large .fish-bottomFin {
+      width: 150px;
+      height: 75px;
+
+      &.round {
+        width: 112.5px;
+      }
+
+      &.thin {
+        height: 50px;
+      }
+    }
+
+    // Adjust fish-sideFin
+    &.small .fish-sideFin {
+      width: 12px;
+      height: 9px;
+      top: 50%;
+    }
+
+    &.medium .fish-sideFin {
+      width: 24px;
+      height: 18px;
+      top: 50%;
+    }
+
+    &.large .fish-sideFin {
+      width: 60px;
+      height: 45px;
+      top: 50%;
+    }
+
+    // Adjust fish-eye
+    &.small .fish-eye {
+      width: 4.5px;
+      height: 4.5px;
+      top: 9px;
+      left: 6px;
+
+      &::after {
+        width: 2.1px;
+        height: 2.1px;
+        top: 1.2px;
+        left: 1.2px;
+      }
+    }
+
+    &.medium .fish-eye {
+      width: 9px;
+      height: 9px;
+      top: 18px;
+      left: 12px;
+
+      &::after {
+        width: 4.2px;
+        height: 4.2px;
+        top: 2.4px;
+        left: 2.4px;
+      }
+    }
+
+    &.large .fish-eye {
+      width: 22.5px;
+      height: 22.5px;
+      top: 45px;
+      left: 30px;
+
+      &::after {
+        width: 10.5px;
+        height: 10.5px;
+        top: 6px;
+        left: 6px;
+      }
+    }
+
+    // Adjust fish-eye for thin version
+    &.thin .fish-eye {
+      top: calc(30%); // Move up slightly to compensate for the thin body
+    }
+  }
+}

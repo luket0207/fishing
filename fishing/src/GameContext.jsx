@@ -6,6 +6,7 @@ const initialState = {
   rep: 0,
   mapRowOne: [],
   mapRowTwo: [],
+  fishSpecies: [],
 };
 
 function gameReducer(state, action) {
@@ -31,8 +32,8 @@ function gameReducer(state, action) {
 
       //Fish
 
-    case 'SET_FISH_SPIECIES':
-      return { ...state, fishSpiecies: action.payload };
+      case 'SET_FISH_SPECIES':
+        return { ...state, fishSpecies: action.payload };
 
     default:
       throw new Error(`Unknown action: ${action.type}`);

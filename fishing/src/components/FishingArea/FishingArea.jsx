@@ -16,7 +16,6 @@ const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
 
   const getActiveBiome = () => {
     const foundSquare = activeGrid.find(square => square.Id === activeSquareId);
-    console.log(foundSquare);
     if (foundSquare) {
       setActiveBiome(foundSquare.Biome);
     } else {

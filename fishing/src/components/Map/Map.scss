@@ -1,4 +1,160 @@
+@import '../../assets/scss/imports.scss';
+
+.map-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 800px; // Match the width of your map to ensure proper alignment
+
+    .carousel-button {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1;
+        
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        &.prev {
+            left: 0;
+        }
+
+        &.next {
+            right: 0;
+        }
+    }
+}
+
 .map {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    width: 100%; // Use full width of the carousel container
+    overflow: hidden; // Hide overflowing content
+
+    &-row {
+        display: grid;
+        grid-template-columns: repeat(3, 250px);
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 20px;
+        transition: transform 0.3s ease; // Smooth transition for carousel movement
+
+        &-item {
+            background-color: #dddddd;
+            border-radius: 30px;
+            width: 96%;
+            border: solid 2px black;
+            border-top: none;
+            position: relative;
+            transition: all .3s ease;
+            cursor: pointer;
+
+            &:hover {
+                transform: scale(0.95);
+            }
+
+            &.locked {
+
+                cursor: not-allowed;
+
+                &:hover {
+                    transform: none;
+                }
+            }
+
+            &-top {
+                background-color: darkslategray;
+                color: #dddddd;
+                height: 60px;
+                width: 106%;
+                border-radius: 20px;
+                position: relative;
+                left: -4%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: solid 2px black;
+
+                p {
+                    margin: 0;
+                }
+
+                &-title {
+                    @include font-bold(24px);
+                }
+            }
+
+            &-cost {
+
+                @include font-light(16px);
+            }
+
+            &-biomes {
+                justify-content: center;
+                background-color: #ffffff;
+                width: 160px;
+                column-gap: 3px;
+                text-align: center;
+                padding: 4px 0px;
+                border: solid 2px black;
+                border-top: none;
+                margin: 0 auto;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+
+                .biome {
+                    height: 26px;
+                    width: 26px;
+                    border-radius: 50%;
+                    margin-left: 3px;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    &:first-of-type {
+                        margin-left: 0px;
+                    }
+
+                    &.biome-shallow {
+                        background-color: $biomeShallow;
+                    }
+
+                    &.biome-reeds {
+                        background-color: $biomeReeds;
+                    }
+
+                    &.biome-deep {
+                        background-color: $biomeDeep;
+                    }
+
+                    &.biome-swamp {
+                        background-color: $biomeSwamp;
+                    }
+
+                    &.biome-land {
+                        background-color: $biomeLand;
+                    }
+                }
+            }
+
+            &-fish {
+                display: grid;
+                grid-template-columns: repeat(2, 50%);
+                grid-auto-rows: 50px;
+                justify-content: center;
+                justify-items: center;
+                width: 100%;
+
+                .fish-container {
+                    transform: translateX(-8px);
+                }
+            }
+        }
+    }
 }

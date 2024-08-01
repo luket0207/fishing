@@ -1,0 +1,23 @@
+@mixin font-light($font-size) {
+  font-family: "Grandstander", cursive;
+  font-optical-sizing: auto;
+  font-weight: 300; // Light weight
+  font-style: normal;
+  font-size: $font-size;
+}
+
+@mixin font-regular($font-size) {
+  font-family: "Grandstander", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400; // Regular weight
+  font-style: normal;
+  font-size: $font-size;
+}
+
+@mixin font-bold($font-size) {
+  font-family: "Grandstander", cursive;
+  font-optical-sizing: auto;
+  font-weight: 700; // Bold weight
+  font-style: normal;
+  font-size: $font-size;
+}
