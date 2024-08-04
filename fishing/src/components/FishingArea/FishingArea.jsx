@@ -3,12 +3,15 @@ import CastControl from './components/CastControl/CastControl';
 import FishingGrid from './components/FishingGrid/FishingGrid';
 import './FishingArea.scss';
 import Hook from './components/Hook/Hook';
+import { useNotification } from '../../gamesetup/Notification/NotificationContext';
 
 const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
   const [fishingScene, setFishingScene] = useState('cast');
   const size = activeGrid.length;
   const [activeSquareId, setActiveSquareId] = useState(null);
   const [activeBiome, setActiveBiome] = useState('');
+  const weather = "rain";
+  const showNotification = useNotification();
 
   const handleBack = () => {
     setMainScene('map');
@@ -29,6 +32,11 @@ const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
     }
   }, [activeSquareId]);
 
+  const resetCast = () => {
+    showNotification("Turn Ended", true);
+    setFishingScene('cast')
+  };
+
   return (
     <div className="fishing-area">
       <button onClick={handleBack}>Back</button>
@@ -43,7 +51,7 @@ const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
           getActiveBiome={getActiveBiome}
         />
       )}
-      {fishingScene === 'hook' && <Hook activeBiome={activeBiome} fishArray={fishArray} />}
+      {fishingScene === 'hook' && <Hook activeBiome={activeBiome} fishArray={fishArray} resetCast={resetCast} weather={weather} />}
       {fishingScene === 'reel' && <></>}
       {fishingScene === 'catch' && <></>}
     </div>

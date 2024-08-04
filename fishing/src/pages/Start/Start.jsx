@@ -45,12 +45,12 @@ const generateSize = (row) => {
 };
 
 const MAX_BIOME_COVERAGE = {
-  1: 50,
-  2: 50,
+  1: 40,
+  2: 40,
   3: 50,
-  4: 60,
+  4: 50,
   5: 60,
-  6: 70,
+  6: 60,
 };
 
 const MIN_BIOME_COVERAGE = {
@@ -410,7 +410,7 @@ function generateFishSpecies() {
       const size = getRandomFloat(minSize, maxSize, 2); // Generate size with two decimal places
 
       // Adjust recordCatch, hardiness, and growthRate based on new size values
-      const recordCatch = getRandomFloat(size * 0.6, size * 0.8, 2);
+      const recordCatch = getRandomFloat(size * 0.75, size * 0.9, 2);
       const hardiness = getRandomInt(1, 5);
       const growthRate = getRandomInt(2, 8);
       const likesBait = getRandomElement(baits);

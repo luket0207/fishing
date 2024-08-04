@@ -1,0 +1,153 @@
+@import "../../../../../../assets/scss/imports.scss";
+
+.display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: lighten($water, 20%);
+  height: 250px;
+  width: 300px;
+  overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+
+  &:after {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35%;
+    background-color: $water;
+  }
+}
+
+.float {
+  width: 16px;
+  margin-top: 40px;
+  height: 200px;
+  background-color: red;
+  border-radius: 8px;
+  position: relative;
+  animation: rest-animation 1s infinite ease-in-out;
+
+  &.rest &.missed {
+    animation-name: rest-animation;
+  }
+
+  &.tease {
+    animation-name: tease-animation;
+  }
+
+  &.fake {
+    animation-name: fake-animation;
+  }
+
+  &.nibble {
+    animation-name: nibble-animation;
+  }
+}
+
+.controls {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button,
+  input {
+    margin: 5px;
+  }
+}
+
+@keyframes rest-animation {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(calc(50 * 0.1%));
+  }
+}
+
+@keyframes fake-animation {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(calc(2px + var(--size) * 0.15%));
+  }
+  30% {
+    transform: translateY(calc(2px + var(--size) * 0.25%));
+  }
+  45% {
+    transform: translateY(calc(3px + var(--size) * 0.2%));
+  }
+  55% {
+    transform: translateY(calc(2px + var(--size) * 0.35%));
+  }
+  70% {
+    transform: translateY(calc(2px + var(--size) * 0.15%));
+  }
+  80% {
+    transform: translateY(calc(2px + var(--size) * 0.3%));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes tease-animation {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(calc(4px + var(--size) * 0.15%));
+  }
+  30% {
+    transform: translateY(calc(4px + var(--size) * 0.25%));
+  }
+  45% {
+    transform: translateY(calc(4px + var(--size) * 0.2%));
+  }
+  55% {
+    transform: translateY(calc(4px + var(--size) * 0.35%));
+  }
+  70% {
+    transform: translateY(calc(4px + var(--size) * 0.15%));
+  }
+  80% {
+    transform: translateY(calc(4px + var(--size) * 0.3%));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes nibble-animation {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(calc(6px + var(--size) * 0.6%));
+  }
+  25% {
+    transform: translateY(calc(6px + var(--size) * 1.2%));
+  }
+  35% {
+    transform: translateY(calc(6px + var(--size) * 0.6%));
+  }
+  50% {
+    transform: translateY(calc(6px + var(--size) * 1.4%));
+  }
+  65% {
+    transform: translateY(calc(6px + var(--size) * 0.6%));
+  }
+  80% {
+    transform: translateY(calc(6px + var(--size) * 1.2%));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

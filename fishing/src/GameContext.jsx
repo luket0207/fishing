@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useContext } from 'react';
+import React, { createContext, useReducer, useContext } from "react";
 
 // Define the initial state and reducer
 const initialState = {
@@ -11,29 +11,32 @@ const initialState = {
 
 function gameReducer(state, action) {
   switch (action.type) {
-    case 'SET_MONEY':
+    case "SET_MONEY":
       return { ...state, money: action.payload };
-    case 'SET_REP':
+    case "SET_REP":
       return { ...state, rep: action.payload };
+    case "SET_DAY":
+      return { ...state, day: action.payload };
+    case "SET_TIME":
+      return { ...state, time: action.payload };
 
     // Maps
-    case 'SET_MAP_ROW_1':
+    case "SET_MAP_ROW_1":
       return { ...state, mapRow1: action.payload };
-    case 'SET_MAP_ROW_2':
+    case "SET_MAP_ROW_2":
       return { ...state, mapRow2: action.payload };
-    case 'SET_MAP_ROW_3':
+    case "SET_MAP_ROW_3":
       return { ...state, mapRow3: action.payload };
-    case 'SET_MAP_ROW_4':
+    case "SET_MAP_ROW_4":
       return { ...state, mapRow4: action.payload };
-    case 'SET_MAP_ROW_5':
+    case "SET_MAP_ROW_5":
       return { ...state, mapRow5: action.payload };
-    case 'SET_MAP_ROW_6':
+    case "SET_MAP_ROW_6":
       return { ...state, mapRow6: action.payload };
 
-      //Fish
-
-      case 'SET_FISH_SPECIES':
-        return { ...state, fishSpecies: action.payload };
+    //Fish
+    case "SET_FISH_SPECIES":
+      return { ...state, fishSpecies: action.payload };
 
     default:
       throw new Error(`Unknown action: ${action.type}`);
@@ -46,7 +49,7 @@ const GameContext = createContext();
 // Create a provider component
 export function GameProvider({ children }) {
   const [state, dispatch] = useReducer(gameReducer, initialState);
-  
+
   return (
     <GameContext.Provider value={{ state, dispatch }}>
       {children}

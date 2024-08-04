@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react";
 import "./Hook.scss";
+import Snag from "./components/Snag/Snag";
+import Float from "./components/Float/Float";
 
-const Hook = ({ activeBiome, fishArray, weather }) => {
+const Hook = ({ activeBiome, fishArray, weather, resetCast }) => {
 
-  const [nibblingFish, setNibblingFish] = useState("");
+  const [caughtFish, setCaughtFish] = useState(null);
   const [landCheck, setLandCheck] = useState(false);
-  const rodStrikeModifier = 80;
-  const hookStrikeModifier = 60;
-  const lineStrikeModifier = 0;
-  const rodSnagModifier = 50;
-  const lineSnagModifier = 50;
-  
+ 
+
+  const endHook = () => {
+    if (caughtFish) {
+      console.log("Caught Fish")
+    } else {
+      resetCast();
+    }
+  }
 
   // Move function definitions to the top
   const calculateWeatherCatchModifier = (weather) => {
@@ -22,24 +27,22 @@ const Hook = ({ activeBiome, fishArray, weather }) => {
       case "normal":
         return [0, 0];
       case "shallow":
-        return [0, 5];
+        return [0, 60];
       case "deep":
-        return [5, 5];
+        return [5, 60];
       case "reeds":
-        return [20, 40];
+        return [20, 20];
       case "swamp":
-        return [40, 80];
+        return [40, 30];
       case "land":
-        return [0, 0];
+        return [0, 60];
       default:
         throw new Error(`Unknown biome: ${activeBiome}`);
     }
   };
 
   //catch
-  const rodCatchModifier = 80;
-  const baitCatchModifier = 20;
-  const tackleCatchModifer = 20;
+
   const weatherCatchModifier = calculateWeatherCatchModifier(weather);
 
   //more than one
@@ -61,8 +64,8 @@ const Hook = ({ activeBiome, fishArray, weather }) => {
   return (
     <div className="hook">
       <p>Hook</p>
-      {landCheck && <p>Land</p>}
-      {!landCheck && <p>Not Land</p>}
+      {landCheck && <Snag biomeSnagModifier={biomeSnagModifier} endHook={endHook}/> }
+      {!landCheck && <Float fishArray={fishArray} activeBiome={activeBiome} weather={weather} />}
     </div>
   );
 };

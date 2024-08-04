@@ -55,7 +55,7 @@ const Fish = ({ id, size = "small" }) => {
       </div>
       <div className="fish-sideFin" style={{ backgroundColor: colourTwo }}></div>
       <div className="fish-eye"></div> 
-      {isHovered && <div className="tooltip">{name}, min {minSize}, max {maxSize}</div>}
+      {isHovered && <div className="tooltip"><p>{name}</p></div>}
     </div>
   );
 };
