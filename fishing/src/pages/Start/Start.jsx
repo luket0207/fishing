@@ -438,6 +438,7 @@ function generateFishSpecies() {
         dislikesWeather: null,
         dislikesBiome: null,
         recordCatch: recordCatch.toFixed(2),
+        personalCatch: 0,
         colourOne: generateReadableHex(staticHex),
         colourTwo: generateReadableHex(staticHex),
         pattern: getRandomElement(patterns),
@@ -450,6 +451,18 @@ function generateFishSpecies() {
         breedFood: getRandomElement(breedFoods),
         hardiness,
         growthRate,
+        unlockLikesBait: false,
+        unlockLikesWeather: false,
+        unlockLikesBiome: false,
+        unlockDislikesBait: false,
+        unlockDislikesWeather: false,
+        unlockDislikesBiome: false,
+        unlockBreedSchool: false,
+        unlockBreedChance: false,
+        unlockBreedDuration: false,
+        unlockBreedPlant: false,
+        unlockBreedRock: false,
+        unlockBreedFood: false,
       };
 
       // Assign the dislikes properties after the fish object has been defined

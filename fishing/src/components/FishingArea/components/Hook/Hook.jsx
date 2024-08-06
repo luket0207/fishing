@@ -3,69 +3,105 @@ import "./Hook.scss";
 import Snag from "./components/Snag/Snag";
 import Float from "./components/Float/Float";
 
-const Hook = ({ activeBiome, fishArray, weather, resetCast }) => {
-
-  const [caughtFish, setCaughtFish] = useState(null);
-  const [landCheck, setLandCheck] = useState(false);
- 
-
-  const endHook = () => {
-    if (caughtFish) {
-      console.log("Caught Fish")
-    } else {
-      resetCast();
-    }
-  }
-
-  // Move function definitions to the top
-  const calculateWeatherCatchModifier = (weather) => {
-    return 10;
-  };
+const Hook = ({
+  activeBiome,
+  fishArray,
+  weather,
+  resetCast,
+  setCaughtFishSize,
+  setCaughtFish,
+  setFishingScene,
+}) => {
+  const [snagCheck, setSnagCheck] = useState(false);
 
   const calculateBiomeModifiers = (activeBiome, weather) => {
     switch (activeBiome) {
       case "normal":
-        return [0, 0];
+        const no = weather === "clear" ? 10 : 0;
+        return [no, 0];
       case "shallow":
-        return [0, 60];
+        const sh = weather === "sunny" ? 15 : 5;
+        return [sh, 5];
       case "deep":
-        return [5, 60];
+        const de = weather === "cloudy" ? 15 : 5;
+        return [de, 5];
       case "reeds":
-        return [20, 20];
+        const re = weather === "rain" ? 30 : 20;
+        return [re, 40];
       case "swamp":
-        return [40, 30];
+        const sw = weather === "thunder" ? 60 : 40;
+        return [sw, 60];
       case "land":
-        return [0, 60];
+        return [0, 100];
       default:
         throw new Error(`Unknown biome: ${activeBiome}`);
     }
   };
 
-  //catch
+  const [biomeCatchModifier, biomeSnagModifier] = calculateBiomeModifiers(
+    activeBiome,
+    weather
+  );
 
-  const weatherCatchModifier = calculateWeatherCatchModifier(weather);
-
-  //more than one
-  const [biomeCatchModifier, biomeSnagModifier] = calculateBiomeModifiers(activeBiome, weather);
-
-  const startHookSequence = (fishArray) => {
-   //working
+  function getRandomNumber(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  const endHook = (fish = null) => {
+    console.log(fish);
+    if (fish) {
+      console.log("Hook caught");
+      setFishingScene("reel");
+    } else {
+      const snagChance = getRandomNumber(0, 100);
+      if (snagChance < biomeSnagModifier) {
+        setSnagCheck(true);
+        console.log("Snagged");
+      } else {
+        setSnagCheck(false);
+        console.log("Hook miss");
+        resetCast();
+      }
+    }
+  };
+
+  const endSnag = () => {
+    setSnagCheck(false);
+    console.log("Snag End");
+    resetCast();
+  };
 
   useEffect(() => {
     if (activeBiome === "land") {
-      setLandCheck(true);
+      setSnagCheck(true);
     } else {
-      startHookSequence(fishArray);
+      setSnagCheck(false);
     }
   }, []);
 
   return (
     <div className="hook">
-      <p>Hook</p>
-      {landCheck && <Snag biomeSnagModifier={biomeSnagModifier} endHook={endHook}/> }
-      {!landCheck && <Float fishArray={fishArray} activeBiome={activeBiome} weather={weather} />}
+      {snagCheck && (
+        <Snag
+          biomeSnagModifier={biomeSnagModifier}
+          setCaughtFish={setCaughtFish}
+          endSnag={endSnag}
+        />
+      )}
+      {!snagCheck && (
+        <Float
+          fishArray={fishArray}
+          activeBiome={activeBiome}
+          weather={weather}
+          setCaughtFish={setCaughtFish}
+          setCaughtFishSize={setCaughtFishSize}
+          biomeCatchModifier={biomeCatchModifier}
+          biomeSnagModifier={biomeSnagModifier}
+          endHook={endHook}
+        />
+      )}
     </div>
   );
 };

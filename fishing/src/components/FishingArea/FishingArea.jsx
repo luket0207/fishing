@@ -1,28 +1,33 @@
-import { useState, useEffect } from 'react';
-import CastControl from './components/CastControl/CastControl';
-import FishingGrid from './components/FishingGrid/FishingGrid';
-import './FishingArea.scss';
-import Hook from './components/Hook/Hook';
-import { useNotification } from '../../gamesetup/Notification/NotificationContext';
+import { useState, useEffect } from "react";
+import CastControl from "./components/CastControl/CastControl";
+import FishingGrid from "./components/FishingGrid/FishingGrid";
+import "./FishingArea.scss";
+import Hook from "./components/Hook/Hook";
+import { useNotification } from "../../gamesetup/Notification/NotificationContext";
+import Reel from "./components/Reel/Reel";
 
 const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
-  const [fishingScene, setFishingScene] = useState('cast');
+  const [fishingScene, setFishingScene] = useState("cast");
   const size = activeGrid.length;
   const [activeSquareId, setActiveSquareId] = useState(null);
-  const [activeBiome, setActiveBiome] = useState('');
+  const [activeBiome, setActiveBiome] = useState("");
   const weather = "rain";
   const showNotification = useNotification();
+  const [caughtFish, setCaughtFish] = useState(null);
+  const [caughtFishSize, setCaughtFishSize] = useState(0);
 
   const handleBack = () => {
-    setMainScene('map');
+    setMainScene("map");
   };
 
   const getActiveBiome = () => {
-    const foundSquare = activeGrid.find(square => square.Id === activeSquareId);
+    const foundSquare = activeGrid.find(
+      (square) => square.Id === activeSquareId
+    );
     if (foundSquare) {
       setActiveBiome(foundSquare.Biome);
     } else {
-      setActiveBiome('');
+      setActiveBiome("");
     }
   };
 
@@ -34,26 +39,54 @@ const FishingArea = ({ setMainScene, activeGrid, fishArray }) => {
 
   const resetCast = () => {
     showNotification("Turn Ended", true);
-    setFishingScene('cast')
+    setFishingScene("cast");
   };
 
   return (
     <div className="fishing-area">
       <button onClick={handleBack}>Back</button>
-      <FishingGrid activeGrid={activeGrid} activeSquareId={activeSquareId} />
-      {fishingScene === 'cast' && (
-        <CastControl
-          size={size}
-          activeSquareId={activeSquareId}
-          setActiveSquareId={setActiveSquareId}
-          setFishingScene={setFishingScene}
+
+      {fishingScene === "cast" && (
+        <div className="fishing-area-grid">
+          <FishingGrid
+            activeGrid={activeGrid}
+            activeSquareId={activeSquareId}
+          />
+          <CastControl
+            size={size}
+            activeSquareId={activeSquareId}
+            setActiveSquareId={setActiveSquareId}
+            setFishingScene={setFishingScene}
+            activeBiome={activeBiome}
+            getActiveBiome={getActiveBiome}
+          />
+        </div>
+      )}
+      {fishingScene === "hook" && (
+        <Hook
           activeBiome={activeBiome}
-          getActiveBiome={getActiveBiome}
+          fishArray={fishArray}
+          resetCast={resetCast}
+          weather={weather}
+          setFishingScene={setFishingScene}
+          caughtFish={caughtFish}
+          setCaughtFish={setCaughtFish}
+          setCaughtFishSize={setCaughtFishSize}
         />
       )}
-      {fishingScene === 'hook' && <Hook activeBiome={activeBiome} fishArray={fishArray} resetCast={resetCast} weather={weather} />}
-      {fishingScene === 'reel' && <></>}
-      {fishingScene === 'catch' && <></>}
+      {fishingScene === "reel" && (
+        <Reel
+          caughtFish={caughtFish}
+          caughtFishSize={caughtFishSize}
+          setFishingScene={setFishingScene}
+          resetCast={resetCast}
+        />
+      )}
+      {fishingScene === "catch" && (
+        <>
+          <p>CATCH!</p>
+        </>
+      )}
     </div>
   );
 };

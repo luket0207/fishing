@@ -3,13 +3,23 @@ import { useNotification } from "../../../../../../gamesetup/Notification/Notifi
 import "./Float.scss";
 import Display from "./Display";
 
-const Float = ({ fishArray, activeBiome, weather }) => {
+const Float = ({
+  fishArray,
+  activeBiome,
+  weather,
+  setCaughtFish,
+  setCaughtFishSize,
+  biomeCatchModifier,
+  biomeSnagModifier,
+  endHook,
+}) => {
   // Constants related to fishing gear and modifiers
   const rodCatchModifier = 80;
   const activeBait = "worm";
   const tackleCatchModifier = 20;
   const showNotification = useNotification();
 
+  const [nibblingFish, setNibblingFish] = useState(null);
   const [nibblingFishWeight, setNibblingFishWeight] = useState(0);
   const [floatState, setFloatState] = useState("rest");
   const [timer, setTimer] = useState(null); // For controlling the timer
@@ -71,7 +81,7 @@ const Float = ({ fishArray, activeBiome, weather }) => {
     });
 
     // Add rod and tackle modifiers to the total nibble chance
-    nibbleChance += rodCatchModifier + tackleCatchModifier;
+    nibbleChance += rodCatchModifier + tackleCatchModifier + biomeCatchModifier;
 
     // Generate a random number to determine if a nibble occurs
     const randomNumber = RandomNumber(maxChance);
@@ -104,17 +114,21 @@ const Float = ({ fishArray, activeBiome, weather }) => {
         }
       }
 
-      // Generate and log the weight of the selected fish
       if (selectedFish) {
         const fishWeight = generateFishWeight(selectedFish);
-        setNibblingFishWeight(fishWeight);
-        const timeline = generateNibbleTimeline();
+        setNibblingFish(selectedFish);
+        setNibblingFishWeight(fishWeight.toFixed(2));
+        const timeline = generateNibbleTimeline(true, selectedFish.rarity);
         startTimer(timeline);
         console.log(`Fish weight: ${fishWeight.toFixed(2)}`);
       }
     } else {
+      console.log("No Nibble");
+      const fishWeight = generateFishWeight(fishArray[0]);
+      setNibblingFishWeight(fishWeight.toFixed(2));
       showNotification("No Nibble", false);
-      console.log("No nibble."); // No nibble if random number exceeds nibble chance
+      const timeline = generateNibbleTimeline(false);
+      startTimer(timeline);
     }
   };
 
@@ -122,29 +136,32 @@ const Float = ({ fishArray, activeBiome, weather }) => {
   const generateFishWeight = (fish) => {
     const minSize = parseFloat(fish.minSize);
     const maxSize = parseFloat(fish.maxSize);
+    const recordCatch = parseFloat(fish.recordCatch);
     const sizeRange = maxSize - minSize;
+    const adjustedRecordSize = Math.min(recordCatch, maxSize);
+    const halfMiddle = minSize + (adjustedRecordSize - minSize) / 2;
 
-    // Generate a size factor with a high bias towards smaller sizes
-    const exponent = 3; // Adjust this value to increase/decrease bias
-    let sizeFactor = Math.pow(Math.random(), exponent);
-    let size = minSize + sizeFactor * sizeRange;
+    let size;
 
-    // Increase the likelihood of larger sizes if conditions are favorable
-    let adjustmentFactor = 1;
+    // Determine the range based on a random number
+    const randomValue = Math.random();
 
-    if (fish.likesBait.toLowerCase() === activeBait.toLowerCase()) {
-      adjustmentFactor += 0.2; // Increase by 20%
+    if (randomValue < 0.6) {
+      // 60% chance: Less than half of the middle of the range
+      size = minSize + Math.random() * (halfMiddle - minSize);
+    } else if (randomValue < 0.99) {
+      // 39% chance: Between half of the middle and the record size
+      size = halfMiddle + Math.random() * (adjustedRecordSize - halfMiddle);
+    } else {
+      // 1% chance: Above the record size if record size < max size
+      if (adjustedRecordSize < maxSize) {
+        size =
+          adjustedRecordSize + Math.random() * (maxSize - adjustedRecordSize);
+      } else {
+        // Fallback if record size equals max size
+        size = adjustedRecordSize;
+      }
     }
-
-    if (fish.likesBiome.toLowerCase() === activeBiome.toLowerCase()) {
-      adjustmentFactor += 0.1; // Increase by 10%
-    }
-
-    if (fish.likesWeather.toLowerCase() === weather.toLowerCase()) {
-      adjustmentFactor += 0.1; // Increase by 10%
-    }
-
-    size = minSize + adjustmentFactor * (size - minSize);
 
     // Ensure size is within the min and max size bounds
     size = Math.max(minSize, Math.min(maxSize, size));
@@ -155,19 +172,43 @@ const Float = ({ fishArray, activeBiome, weather }) => {
   const generateRandomValue = (min, max) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
 
-  const generateNibbleTimeline = () => {
-    const waitDuration = generateRandomValue(4, 10); // Random number between 3 and 10 (inclusive)
-    const fakeMove = Math.random() < 0.5; // 50% chance of true or false
-    const fakeMoveDuration = generateRandomValue(2, 4); // Random number between 1 and 3 (inclusive)
-    const fakeMoveExtraWait = generateRandomValue(4, 8); // Random number between 3 and 6 (inclusive)
+  const generateNibbleDuration = (fishRarity) => {
+    switch (fishRarity) {
+      case "common":
+        return 4;
+      case "uncommon":
+        return 4;
+      case "rare":
+        return 3;
+      case "epic":
+        return 3;
+      case "legendary":
+        return 2;
+      case "mythical":
+        return 2;
+      default:
+        throw new Error(`Unknown rarity in float: ${fishRarity}`);
+    }
+  }
+
+  const generateNibbleTimeline = (fishNibble, fishRarity) => {
+    const waitDuration = generateRandomValue(2, 5); // Random number between 4 and 6 (inclusive)
+    const fakeMove = fishNibble ? Math.random() < 0.5 : true; // 50% chance of true or false
+    const fakeMoveDuration = generateRandomValue(1, 4); // Random number between 2 and 4 (inclusive)
+    const fakeMoveExtraWait = generateRandomValue(2, 5); // Random number between 2 and 6 (inclusive)
     const fakeMoveTwo = Math.random() < 0.5; // 50% chance of true or false
-    const fakeMoveTwoDuration = generateRandomValue(2, 4); // Random number between 1 and 3 (inclusive)
-    const fakeMoveTwoExtraWait = generateRandomValue(4, 8); // Random number between 3 and 6 (inclusive)
-    const teaseDuration = generateRandomValue(2, 4); // Random number between 1 and 3 (inclusive)
-    const nibbleDuration = 3; 
+    const fakeMoveTwoDuration = generateRandomValue(1, 4); // Random number between 2 and 4 (inclusive)
+    const fakeMoveTwoExtraWait = generateRandomValue(2, 5); // Random number between 2 and 6 (inclusive)
+
+    // Set teaseDuration and nibbleDuration based on fishNibble
+    const teaseDuration = fishNibble ? generateRandomValue(2, 4) : 0; // 0 if fishNibble is true, otherwise random value between 2 and 4
+    const nibbleDuration = fishNibble ? generateNibbleDuration(fishRarity) : 0; // 0 if fishNibble is true, otherwise 3
+
+    
 
     // Logging or returning the generated values
     console.log({
+      fishNibble,
       waitDuration,
       fakeMove,
       fakeMoveDuration,
@@ -203,106 +244,175 @@ const Float = ({ fishArray, activeBiome, weather }) => {
     teaseDuration,
     nibbleDuration,
   }) => {
-    let totalDuration = waitDuration;
     setFloatState("rest");
 
     if (timer) {
       clearTimeout(timer); // Clear any existing timer
     }
 
-    const updateState = (newState, delay) => {
-      setTimeout(() => setFloatState(newState), delay * 1000);
-    };
-
     // Initial rest period
-    updateState("rest", waitDuration);
-    totalDuration += waitDuration;
-
-    // Handle first fake move if applicable
-    if (fakeMove) {
+    setTimer(
       setTimeout(() => {
-        setFloatState("fake");
-        setTimeout(() => {
-          setFloatState("rest");
-          totalDuration += fakeMoveDuration + fakeMoveExtraWait;
+        setFloatState("rest");
 
-          // Handle second fake move if applicable
-          if (fakeMoveTwo) {
+        // Handle first fake move if applicable
+        if (fakeMove) {
+          setTimer(
             setTimeout(() => {
               setFloatState("fake");
-              setTimeout(() => {
-                setFloatState("rest");
-                totalDuration += fakeMoveTwoDuration + fakeMoveTwoExtraWait;
-
-                // Proceed to tease and nibble phases
-                setTimeout(() => {
-                  setFloatState("tease");
-                  setTimeout(() => {
-                    setFloatState("nibble");
-                    setTimeout(() => {
-                      setFloatState("rest");
-                      setTimeout(() => {
-                        setFloatState("missed");
-                      }, (waitDuration / 2) * 1000);
-                    }, nibbleDuration * 1000);
-                  }, teaseDuration * 1000);
-                }, fakeMoveTwoExtraWait * 1000);
-              }, fakeMoveTwoDuration * 1000);
-            }, fakeMoveExtraWait * 1000);
-          } else {
-            // If no second fake move, proceed to tease and nibble
-            setTimeout(() => {
-              setFloatState("tease");
-              setTimeout(() => {
-                setFloatState("nibble");
+              setTimer(
                 setTimeout(() => {
                   setFloatState("rest");
-                  setTimeout(() => {
-                    setFloatState("missed");
-                  }, (waitDuration / 2) * 1000);
-                }, nibbleDuration * 1000);
-              }, teaseDuration * 1000);
-            }, fakeMoveExtraWait * 1000);
-          }
-        }, fakeMoveDuration * 1000);
-      }, waitDuration * 1000);
-    } else if (fakeMoveTwo) {
-      // Handle second fake move independently if first is not present
-      setTimeout(() => {
-        setFloatState("fake");
-        setTimeout(() => {
-          setFloatState("rest");
-          totalDuration += fakeMoveTwoDuration + fakeMoveTwoExtraWait;
 
-          // Proceed to tease and nibble phases
-          setTimeout(() => {
-            setFloatState("tease");
+                  // Handle second fake move if applicable
+                  if (fakeMoveTwo) {
+                    setTimer(
+                      setTimeout(() => {
+                        setFloatState("fake");
+                        setTimer(
+                          setTimeout(() => {
+                            setFloatState("rest");
+
+                            // Proceed to tease and nibble phases
+                            setTimer(
+                              setTimeout(() => {
+                                if (teaseDuration !== 0) setFloatState("tease");
+                                setTimer(
+                                  setTimeout(() => {
+                                    if (nibbleDuration !== 0)
+                                      setFloatState("nibble");
+                                    setTimer(
+                                      setTimeout(() => {
+                                        setFloatState("rest");
+                                        setTimer(
+                                          setTimeout(() => {
+                                            setFloatState("missed");
+                                          }, (waitDuration / 2) * 1000)
+                                        );
+                                      }, nibbleDuration * 1000)
+                                    );
+                                  }, teaseDuration * 1000)
+                                );
+                              }, fakeMoveTwoExtraWait * 1000)
+                            );
+                          }, fakeMoveTwoDuration * 1000)
+                        );
+                      }, fakeMoveExtraWait * 1000)
+                    );
+                  } else {
+                    // If no second fake move, proceed to tease and nibble
+                    setTimer(
+                      setTimeout(() => {
+                        if (teaseDuration !== 0) setFloatState("tease");
+                        setTimer(
+                          setTimeout(() => {
+                            if (nibbleDuration !== 0) setFloatState("nibble");
+                            setTimer(
+                              setTimeout(() => {
+                                setFloatState("rest");
+                                setTimer(
+                                  setTimeout(() => {
+                                    setFloatState("missed");
+                                  }, (waitDuration / 2) * 1000)
+                                );
+                              }, nibbleDuration * 1000)
+                            );
+                          }, teaseDuration * 1000)
+                        );
+                      }, fakeMoveExtraWait * 1000)
+                    );
+                  }
+                }, fakeMoveDuration * 1000)
+              );
+            }, waitDuration * 1000)
+          );
+        } else if (fakeMoveTwo) {
+          // Handle second fake move independently if first is not present
+          setTimer(
             setTimeout(() => {
-              setFloatState("nibble");
-              setTimeout(() => {
-                setFloatState("rest");
+              setFloatState("fake");
+              setTimer(
                 setTimeout(() => {
-                  setFloatState("missed");
-                }, (waitDuration / 2) * 1000);
-              }, nibbleDuration * 1000);
-            }, teaseDuration * 1000);
-          }, fakeMoveTwoExtraWait * 1000);
-        }, fakeMoveTwoDuration * 1000);
-      }, waitDuration * 1000);
-    } else {
-      // If neither fakeMove nor fakeMoveTwo is present, proceed directly to tease and nibble
-      setTimeout(() => {
-        setFloatState("tease");
-        setTimeout(() => {
-          setFloatState("nibble");
-          setTimeout(() => {
-            setFloatState("rest");
+                  setFloatState("rest");
+
+                  // Proceed to tease and nibble phases
+                  setTimer(
+                    setTimeout(() => {
+                      if (teaseDuration !== 0) setFloatState("tease");
+                      setTimer(
+                        setTimeout(() => {
+                          if (nibbleDuration !== 0) setFloatState("nibble");
+                          setTimer(
+                            setTimeout(() => {
+                              setFloatState("rest");
+                              setTimer(
+                                setTimeout(() => {
+                                  setFloatState("missed");
+                                }, (waitDuration / 2) * 1000)
+                              );
+                            }, nibbleDuration * 1000)
+                          );
+                        }, teaseDuration * 1000)
+                      );
+                    }, fakeMoveTwoExtraWait * 1000)
+                  );
+                }, fakeMoveTwoDuration * 1000)
+              );
+            }, waitDuration * 1000)
+          );
+        } else {
+          // If neither fakeMove nor fakeMoveTwo is present, proceed directly to tease and nibble
+          setTimer(
             setTimeout(() => {
-              setFloatState("missed");
-            }, (waitDuration / 2) * 1000);
-          }, nibbleDuration * 1000);
-        }, teaseDuration * 1000);
-      }, waitDuration * 1000);
+              if (teaseDuration !== 0) setFloatState("tease");
+              setTimer(
+                setTimeout(() => {
+                  if (nibbleDuration !== 0) setFloatState("nibble");
+                  setTimer(
+                    setTimeout(() => {
+                      setFloatState("rest");
+                      setTimer(
+                        setTimeout(() => {
+                          setFloatState("missed");
+                        }, (waitDuration / 2) * 1000)
+                      );
+                    }, nibbleDuration * 1000)
+                  );
+                }, teaseDuration * 1000)
+              );
+            }, waitDuration * 1000)
+          );
+        }
+      }, waitDuration * 1000)
+    );
+  };
+
+  const stopTimer = () => {
+    if (timer) {
+      console.log("Stop timer on " + floatState);
+      clearTimeout(timer); // Stop the timer
+      setTimer(null); // Reset the timer state
+    }
+    if (floatState === "nibble") {
+      console.log("Caught " + nibblingFish.name);
+      showNotification("CATCH", true);
+      setCaughtFish(nibblingFish);
+      setCaughtFishSize(nibblingFishWeight);
+      endHook(nibblingFish);
+    } else {
+      showNotification("missed", false);
+      setCaughtFish(null);
+      endHook();
+    }
+    setFloatState("rest");
+  };
+
+  const resetScene = () => {
+    setFloatState("rest");
+    setNibblingFishWeight(0);
+    if (timer) {
+      clearTimeout(timer); // Stop any ongoing timer
+      setTimer(null); // Reset the timer state
     }
   };
 
@@ -315,13 +425,25 @@ const Float = ({ fishArray, activeBiome, weather }) => {
     };
   }, [timer]);
 
+  useEffect(() => {
+    if (floatState === "missed") {
+      console.log("Missed reached");
+      setCaughtFish(null);
+      endHook();
+    }
+  }, [floatState]);
+
   return (
     <div className="hook-float">
-      <div className="hook-float-display">
-        <button onClick={generateNibble}>Check Nibble</button>
+      <div className="hook-float-display fishing-area-grid">
         <div className="float-state-display">
-          <p>Float State: {floatState}</p>
           <Display state={floatState} size={nibblingFishWeight} />
+        </div>
+        <div className="float-state-buttons">
+        <p>Float State: {floatState}</p>
+          <button onClick={generateNibble}>Check Nibble</button>
+          <button onClick={stopTimer}>Stop Timer</button>
+          <button onClick={resetScene}>Reset Scene</button>
         </div>
       </div>
     </div>

@@ -2,10 +2,7 @@ import React, { useState } from "react";
 
 import "./Snag.scss";
 
-const Snag = (
-  {biomeSnagModifier,
-  endHook}
-) => {
+const Snag = ({ biomeSnagModifier, setCaughtFish, endSnag }) => {
   const [attempt, setAttempt] = useState(0);
   const rodSnagModifier = 50;
   const lineSnagModifier = 50;
@@ -20,10 +17,11 @@ const Snag = (
     if (RandomNumber(300 + attempt) < snagSave) {
       //freed
       console.log("Freed");
-      endHook();
+      setCaughtFish(null);
+      endSnag();
     } else {
       //not free
-      if (RandomNumber(100) > (biomeSnagModifier + attempt)) {
+      if (RandomNumber(100) > biomeSnagModifier + attempt) {
         setAttempt(attempt + 10);
         console.log("Still Stuck");
         //still stuck
@@ -39,15 +37,16 @@ const Snag = (
   };
 
   const calculateReelSnag = () => {
-    const snagSave = (rodSnagModifier / 2) + lineSnagModifier;
+    const snagSave = rodSnagModifier / 2 + lineSnagModifier;
 
-    if (RandomNumber(300) < (snagSave + attempt)) {
+    if (RandomNumber(300) < snagSave + attempt) {
       //freed
       console.log("Freed");
-      endHook();
+      setCaughtFish(null);
+      endSnag(null);
     } else {
       //not free
-      if (RandomNumber(100) > (biomeSnagModifier + attempt)) {
+      if (RandomNumber(100) > biomeSnagModifier + attempt) {
         setAttempt(attempt + 10);
         console.log("Still Stuck");
         //still stuck
@@ -64,12 +63,14 @@ const Snag = (
 
   const lineBreak = () => {
     console.log("Break Line");
-    endHook();
+    setCaughtFish(null);
+    endSnag();
   };
 
   const rodBreak = () => {
     console.log("Break Rod");
-    endHook();
+    setCaughtFish(null);
+    endSnag();
   };
 
   return (

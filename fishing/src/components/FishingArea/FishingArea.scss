@@ -1,4 +1,5 @@
-.fishing-area {
+.fishing-area-grid {
     display: grid;
-    justify-content: center;
+    width: 700px;
+    grid-template-rows: 600px 300px;
 }

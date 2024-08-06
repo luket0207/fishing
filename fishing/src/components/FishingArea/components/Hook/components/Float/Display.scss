@@ -5,28 +5,39 @@
   flex-direction: column;
   align-items: center;
   background-color: lighten($water, 20%);
-  height: 250px;
-  width: 300px;
+  height: 600px;
+  width: 700px;
   overflow: hidden;
   position: relative;
   border-radius: 10px;
 
-  &:after {
+  &:before {
     display: block;
     content: '';
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 35%;
+    height: 40%;
     background-color: $water;
   }
+
+}
+
+.float-overflow {
+  overflow: hidden;
+  height: 75%;
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 2;
 }
 
 .float {
   width: 16px;
-  margin-top: 40px;
-  height: 200px;
+  margin-top: 100px;
+  height: 500px;
   background-color: red;
   border-radius: 8px;
   position: relative;
@@ -61,6 +72,38 @@
   }
 }
 
+.ripple-container {
+  position: absolute;
+  height: 120px;
+  width: 120px;
+  top: 75%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  background-color: darken($biomeBackground, 20%);
+  animation: ripple-animation 3s forwards ease-out;
+}
+
+
+@keyframes ripple-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0) scaleX(3.5);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) scaleX(3.5);
+    opacity: 0;
+  }
+}
+
 @keyframes rest-animation {
   0%,
   100% {
@@ -72,33 +115,6 @@
 }
 
 @keyframes fake-animation {
-  0% {
-    transform: translateY(0);
-  }
-  20% {
-    transform: translateY(calc(2px + var(--size) * 0.15%));
-  }
-  30% {
-    transform: translateY(calc(2px + var(--size) * 0.25%));
-  }
-  45% {
-    transform: translateY(calc(3px + var(--size) * 0.2%));
-  }
-  55% {
-    transform: translateY(calc(2px + var(--size) * 0.35%));
-  }
-  70% {
-    transform: translateY(calc(2px + var(--size) * 0.15%));
-  }
-  80% {
-    transform: translateY(calc(2px + var(--size) * 0.3%));
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes tease-animation {
   0% {
     transform: translateY(0);
   }
@@ -125,27 +141,54 @@
   }
 }
 
+@keyframes tease-animation {
+  0% {
+    transform: translateY(0);
+  }
+  20% {
+    transform: translateY(calc(8px + var(--size) * 0.15%));
+  }
+  30% {
+    transform: translateY(calc(8px + var(--size) * 0.25%));
+  }
+  45% {
+    transform: translateY(calc(6px + var(--size) * 0.2%));
+  }
+  55% {
+    transform: translateY(calc(6px + var(--size) * 0.35%));
+  }
+  70% {
+    transform: translateY(calc(8px + var(--size) * 0.15%));
+  }
+  80% {
+    transform: translateY(calc(8px + var(--size) * 0.3%));
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 @keyframes nibble-animation {
   0% {
     transform: translateY(0);
   }
   10% {
-    transform: translateY(calc(6px + var(--size) * 0.6%));
+    transform: translateY(calc(16px + var(--size) * 0.6%));
   }
   25% {
-    transform: translateY(calc(6px + var(--size) * 1.2%));
+    transform: translateY(calc(16px + var(--size) * 1.2%));
   }
   35% {
-    transform: translateY(calc(6px + var(--size) * 0.6%));
+    transform: translateY(calc(16px + var(--size) * 0.4%));
   }
   50% {
-    transform: translateY(calc(6px + var(--size) * 1.4%));
+    transform: translateY(calc(16px + var(--size) * 1.4%));
   }
   65% {
-    transform: translateY(calc(6px + var(--size) * 0.6%));
+    transform: translateY(calc(16px + var(--size) * 0.6%));
   }
   80% {
-    transform: translateY(calc(6px + var(--size) * 1.2%));
+    transform: translateY(calc(16px + var(--size) * 1.2%));
   }
   100% {
     transform: translateY(0);
