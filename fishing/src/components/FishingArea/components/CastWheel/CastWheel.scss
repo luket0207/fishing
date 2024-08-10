@@ -1,36 +1,49 @@
 .cast-wheel {
-    height: 100px;
-    width: 100px;
+    height: 200px;  // Changed from 100px to 200px
+    width: 200px;   // Changed from 100px to 200px
     border-radius: 50%;
     position: relative;
-    left: calc(50% - 50px);
+    left: calc(50% - 100px);  // Changed from 50px to 100px
     transform-origin: center center;
     background-color: seagreen;
-
+  
     .aim-direction {
-        position: absolute;
-        height: 50px;
-        width: 6px;
-        border-radius: 3px;
-        background-color: white;
-        top: 0px;
-        left: 50%;
-        transform: translate(-50%);
+      position: absolute;
+      height: 100px;  // Changed from 50px to 100px
+      width: 12px;    // Changed from 6px to 12px
+      border-radius: 6px;  // Changed from 3px to 6px
+      background-color: brown;
+      top: 0px;
+      left: 50%;
+      transform: translate(-50%);
+      transition: all .05s linear;
     }
-
+  
     .power-gauge {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100px;
-        width: 100px;
-        border-radius: 50%;
-        background-color: crimson;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 200px;  // Changed from 100px to 200px
+      width: 200px;   // Changed from 100px to 200px
+      border-radius: 50%;
+      transition: all .05s linear;
     }
-}
 
-.cast-wheel-container {
-    height: 50px;
-    width: 400px;
+    .detail {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: black;
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+    }
+  }
+  
+  .cast-wheel-container {
+    height: 100px;  // Changed from 50px to 200px
+    width: 400px;   // Changed from 400px to 800px (increased proportionally)
     overflow: hidden;
-}
+  }
+  

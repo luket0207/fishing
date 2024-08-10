@@ -1,5 +1,5 @@
+@import "../../assets/scss/imports.scss";
+
 .fishing-area-grid {
-    display: grid;
-    width: 700px;
-    grid-template-rows: 600px 300px;
+    @include display-and-panel;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import "./Hook.scss";
 import Snag from "./components/Snag/Snag";
 import Float from "./components/Float/Float";
@@ -14,7 +14,8 @@ const Hook = ({
 }) => {
   const [snagCheck, setSnagCheck] = useState(false);
 
-  const calculateBiomeModifiers = (activeBiome, weather) => {
+  // Memoized function to calculate biome modifiers
+  const calculateBiomeModifiers = useCallback((activeBiome, weather) => {
     switch (activeBiome) {
       case "normal":
         const no = weather === "clear" ? 10 : 0;
@@ -36,11 +37,12 @@ const Hook = ({
       default:
         throw new Error(`Unknown biome: ${activeBiome}`);
     }
-  };
+  }, []);
 
-  const [biomeCatchModifier, biomeSnagModifier] = calculateBiomeModifiers(
-    activeBiome,
-    weather
+  // Calculate biome modifiers
+  const [biomeCatchModifier, biomeSnagModifier] = useMemo(() => 
+    calculateBiomeModifiers(activeBiome, weather), 
+    [activeBiome, weather, calculateBiomeModifiers]
   );
 
   function getRandomNumber(min, max) {
@@ -49,7 +51,8 @@ const Hook = ({
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  const endHook = (fish = null) => {
+  // Memoized endHook function
+  const endHook = useCallback((fish = null) => {
     console.log(fish);
     if (fish) {
       console.log("Hook caught");
@@ -65,13 +68,14 @@ const Hook = ({
         resetCast();
       }
     }
-  };
+  }, [biomeSnagModifier, getRandomNumber, resetCast, setFishingScene]);
 
-  const endSnag = () => {
+  // Memoized endSnag function
+  const endSnag = useCallback(() => {
     setSnagCheck(false);
     console.log("Snag End");
     resetCast();
-  };
+  }, [resetCast]);
 
   useEffect(() => {
     if (activeBiome === "land") {
@@ -79,18 +83,17 @@ const Hook = ({
     } else {
       setSnagCheck(false);
     }
-  }, []);
+  }, [activeBiome]); // Updated dependency array
 
   return (
     <div className="hook">
-      {snagCheck && (
+      {snagCheck ? (
         <Snag
           biomeSnagModifier={biomeSnagModifier}
           setCaughtFish={setCaughtFish}
           endSnag={endSnag}
         />
-      )}
-      {!snagCheck && (
+      ) : (
         <Float
           fishArray={fishArray}
           activeBiome={activeBiome}

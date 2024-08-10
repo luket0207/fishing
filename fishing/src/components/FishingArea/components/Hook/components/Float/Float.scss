@@ -1,0 +1,18 @@
+@import '../../../../../../assets/scss/imports.scss';
+
+.hook-float {
+    &-container {
+        @include display-and-panel;
+
+        &-buttons {
+            @include panel;
+            background-color: red;
+
+            &-container {
+                @include button-container;
+            }
+        }
+    }
+
+    
+}

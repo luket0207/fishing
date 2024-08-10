@@ -1,40 +1,88 @@
+@import "../../../../assets/scss/imports.scss";
+
 .reel {
+  @include display-and-panel;
+
+  &-display {
+    perspective: 1000px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  
-    .distance-grid {
+    justify-content: center;
+
+    &-grid {
       display: grid;
-      grid-template-columns: repeat(8, 30px);
-      gap: 5px;
-  
+      grid-template-rows: repeat(8, 75px);
+      width: 80%;
+      transform-style: preserve-3d;
+      transform: rotateX(70deg);
+
+      .reel-ripple {
+        position: absolute;
+        left: calc(50% - 15px); // Center the red box horizontally (30px width / 2 = 15px offset)
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: darken($biomeBackground, 20%);
+        animation: reel-ripple-animation 3s infinite; // Updated animation duration
+        transition: top 0.3s ease;
+      
+        &.second {
+          animation-delay: 1s; // 1 second delay for the 2nd element
+        }
+      
+        &.third {
+          animation-delay: 2s; // 2 seconds delay for the 3rd element
+        }
+      }
+
       .grid-square {
-        width: 30px;
-        height: 30px;
-        background-color: #ddd;
-        border: 1px solid #bbb;
-  
-        &.fish {
-          background-color: #4CAF50; // Green color to represent the fish
-          border-color: #388E3C;
+        width: 100%;
+        height: 100%;
+        background-color: $biomeBackground;
+        position: relative; // Ensure position is relative for absolute children
+
+        &.active {
+          background-color: #ddd; // Keep background color same to show only the circle
+          border-color: #bbb;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 50%;
+            background-color: #4caf50; // Green color for the circle
+            border-radius: 50%;
+            transform: translate(-50%, -50%); // Center the circle
+            transition: width 0.3s ease, height 0.3s ease; // Smooth transition
+          }
+        }
+
+        // Animation for the circle moving
+        .active {
+          &::before {
+            width: 50%;
+            height: 50%;
+          }
         }
       }
     }
-  
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      border: none;
-      background-color: #2196F3; // Blue color for the buttons
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-  
-      &:hover {
-        background-color: #1976D2; // Darker blue on hover
-      }
+  }
+
+  &-panel {
+    &-buttons {
+      @include button-container;
     }
   }
-  
+}
+
+@keyframes reel-ripple-animation {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

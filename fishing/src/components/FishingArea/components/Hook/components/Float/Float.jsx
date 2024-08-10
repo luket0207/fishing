@@ -10,7 +10,6 @@ const Float = ({
   setCaughtFish,
   setCaughtFishSize,
   biomeCatchModifier,
-  biomeSnagModifier,
   endHook,
 }) => {
   // Constants related to fishing gear and modifiers
@@ -22,7 +21,8 @@ const Float = ({
   const [nibblingFish, setNibblingFish] = useState(null);
   const [nibblingFishWeight, setNibblingFishWeight] = useState(0);
   const [floatState, setFloatState] = useState("rest");
-  const [timer, setTimer] = useState(null); // For controlling the timer
+  const [timer, setTimer] = useState(null);
+  const [rodRested, setRodRested] = useState(false);
 
   // Function to generate a random number between 0 and max (exclusive)
   const RandomNumber = (max) => Math.floor(Math.random() * max);
@@ -189,7 +189,7 @@ const Float = ({
       default:
         throw new Error(`Unknown rarity in float: ${fishRarity}`);
     }
-  }
+  };
 
   const generateNibbleTimeline = (fishNibble, fishRarity) => {
     const waitDuration = generateRandomValue(2, 5); // Random number between 4 and 6 (inclusive)
@@ -203,8 +203,6 @@ const Float = ({
     // Set teaseDuration and nibbleDuration based on fishNibble
     const teaseDuration = fishNibble ? generateRandomValue(2, 4) : 0; // 0 if fishNibble is true, otherwise random value between 2 and 4
     const nibbleDuration = fishNibble ? generateNibbleDuration(fishRarity) : 0; // 0 if fishNibble is true, otherwise 3
-
-    
 
     // Logging or returning the generated values
     console.log({
@@ -244,13 +242,11 @@ const Float = ({
     teaseDuration,
     nibbleDuration,
   }) => {
-    setFloatState("rest");
-
+    // Clear previous timer if it exists
     if (timer) {
-      clearTimeout(timer); // Clear any existing timer
+      clearTimeout(timer);
     }
 
-    // Initial rest period
     setTimer(
       setTimeout(() => {
         setFloatState("rest");
@@ -425,6 +421,80 @@ const Float = ({
     };
   }, [timer]);
 
+  // Phrases for different float states
+  const floatPhrases = {
+    rest: [
+      "The float is still.",
+      "Nothing seems to be happening.",
+      "The water is calm.",
+      "It's quiet... too quiet.",
+      "Nothing going on...",
+      "Bobbing",
+      "No bites yet",
+    ],
+    fake: [
+      "Did you see that? Something's out there.",
+      "A little twitch.",
+      "Is that a nibble?",
+      "Something seems to be playing with the bait.",
+      "You notice a slight ripple around the float.",
+      "The float bobs.",
+      "Go on... take it",
+      "Something's interested",
+      "Was that a...?",
+      "The float wobbles slightly.",
+      "Is that a bite?",
+      "The float is teasing the surface.",
+      "Something's testing the bait.",
+      "A cautious nibble.",
+      "Something is definitely playing with the bait.",
+      "A little nibble...",
+      "The float jiggles slightly.",
+      "Is it going to bite?",
+      "It seems interested.",
+    ],
+    tease: [
+      "Did you see that? Something's out there.",
+      "A little twitch.",
+      "Is that a nibble?",
+      "Something seems to be playing with the bait.",
+      "You notice a slight ripple around the float.",
+      "The float bobs.",
+      "Go on... take it",
+      "Something's interested",
+      "Was that a...?",
+      "The float wobbles slightly.",
+      "Is that a bite?",
+      "The float is teasing the surface.",
+      "Something's testing the bait.",
+      "A cautious nibble.",
+      "Something is definitely playing with the bait.",
+      "A little nibble...",
+      "The float jiggles slightly.",
+      "Is it going to bite?",
+      "It seems interested.",
+    ],
+    nibble: [
+      "It's a bite!",
+      "The float is going wild!",
+      "You've got a bite!",
+      "Something is on the line!",
+      "Fish on!",
+      "Strike it!",
+    ],
+    missed: [""],
+  };
+
+  // Function to get a random phrase based on the current float state
+  const getFloatPhrase = (state) => {
+    const phrases = floatPhrases[state];
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  };
+
+  const FloatStateDisplay = ({ floatState }) => {
+    return <h2>{getFloatPhrase(floatState)}</h2>;
+  };
+
   useEffect(() => {
     if (floatState === "missed") {
       console.log("Missed reached");
@@ -433,17 +503,41 @@ const Float = ({
     }
   }, [floatState]);
 
+  const handleRestClick = () => {
+    setRodRested(true);
+    generateNibble();
+  };
+
   return (
     <div className="hook-float">
-      <div className="hook-float-display fishing-area-grid">
-        <div className="float-state-display">
-          <Display state={floatState} size={nibblingFishWeight} />
+      <div className="hook-float-container">
+        <div className="hook-float-container-display">
+          {rodRested ? (
+            <Display state={floatState} size={nibblingFishWeight} />
+          ) : (
+            <p>The float is settling</p>
+          )}
         </div>
-        <div className="float-state-buttons">
-        <p>Float State: {floatState}</p>
-          <button onClick={generateNibble}>Check Nibble</button>
-          <button onClick={stopTimer}>Stop Timer</button>
-          <button onClick={resetScene}>Reset Scene</button>
+        <div className="hook-float-container-buttons">
+          <div>
+          {rodRested ? (
+            <FloatStateDisplay floatState={floatState} />
+          ) : (
+            <p>The float is settling</p>
+          )}
+            
+          </div>
+          <div className="hook-float-container-buttons-container">
+            {rodRested ? (
+              <button className="panel-button" onClick={stopTimer}>
+                Strike!
+              </button>
+            ) : (
+              <button className="panel-button" onClick={handleRestClick}>
+                Rest Rod
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

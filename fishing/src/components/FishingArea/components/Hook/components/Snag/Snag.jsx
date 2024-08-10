@@ -5,6 +5,7 @@ import "./Snag.scss";
 const Snag = ({ biomeSnagModifier, setCaughtFish, endSnag }) => {
   const [attempt, setAttempt] = useState(0);
   const rodSnagModifier = 50;
+  const rodStrenght = 50;
   const lineSnagModifier = 50;
 
   const RandomNumber = (max) => {
@@ -14,7 +15,7 @@ const Snag = ({ biomeSnagModifier, setCaughtFish, endSnag }) => {
   const calculateStrikeSnag = () => {
     const snagSave = rodSnagModifier + lineSnagModifier;
 
-    if (RandomNumber(300 + attempt) < snagSave) {
+    if (RandomNumber(200 + attempt) < snagSave) {
       //freed
       console.log("Freed");
       setCaughtFish(null);
@@ -27,7 +28,7 @@ const Snag = ({ biomeSnagModifier, setCaughtFish, endSnag }) => {
         //still stuck
       } else {
         //broke
-        if (RandomNumber(100) > 60) {
+        if (RandomNumber(100) < rodStrenght) {
           lineBreak();
         } else {
           rodBreak();
@@ -39,7 +40,7 @@ const Snag = ({ biomeSnagModifier, setCaughtFish, endSnag }) => {
   const calculateReelSnag = () => {
     const snagSave = rodSnagModifier / 2 + lineSnagModifier;
 
-    if (RandomNumber(300) < snagSave + attempt) {
+    if (RandomNumber(200) < snagSave + attempt) {
       //freed
       console.log("Freed");
       setCaughtFish(null);

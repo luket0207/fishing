@@ -1,4 +1,14 @@
+@import '../../../../assets/scss/imports.scss';
+
 .cast-control {
     display: grid;
     justify-content: center;
+}
+
+.panel {
+    @include panel;
+}
+
+.castScene {
+    @include button-container;
 }

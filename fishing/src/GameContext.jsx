@@ -38,6 +38,20 @@ function gameReducer(state, action) {
     case "SET_FISH_SPECIES":
       return { ...state, fishSpecies: action.payload };
 
+    //Equipment
+    case "SET_EQ_CURRENT":
+      return { ...state, currentEqiptment: action.payload };
+    case "SET_EQ_RODS":
+      return { ...state, rods: action.payload };
+    case "SET_EQ_HOOKS":
+      return { ...state, hooks: action.payload };
+    case "SET_EQ_LINE":
+      return { ...state, line: action.payload };
+    case "SET_EQ_FLOATS":
+      return { ...state, floats: action.payload };
+    case "SET_EQ_TACKLE":
+      return { ...state, tackle: action.payload };
+
     default:
       throw new Error(`Unknown action: ${action.type}`);
   }

@@ -1,0 +1,26 @@
+// Display and Panel
+
+@mixin display-and-panel() {
+    display: grid;
+    width: 700px;
+    grid-template-rows: 600px 200px;
+}
+
+// Panel
+
+@mixin panel() {
+  display: grid;
+  grid-template-rows: 100px 100px;
+  justify-content: center;
+  align-items: center;
+  background-color: darkgreen;
+  width: 700px;
+}
+
+// Button Grid
+
+@mixin button-container($gap: 20px) {
+  display: flex;
+  justify-content: center;
+  gap: $gap;
+}
